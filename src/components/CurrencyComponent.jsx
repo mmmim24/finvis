@@ -11,8 +11,11 @@ const CurrencyComponent = () => {
     const [fromAmount, setFromAmount] = React.useState(100);
     const [toAmount, setToAmount] = React.useState(0);
 
-    const API = import.meta.env.VITE_CURRENCY_API;
-    const KEY = import.meta.env.VITE_CURRENCY_API_KEY;
+    // const API = import.meta.env.VITE_CURRENCY_API;
+    // const KEY = import.meta.env.VITE_CURRENCY_API_KEY;
+
+    const API = import.meta.env.VITE_CURRENCY_LOCAL;
+    const KEY = import.meta.env.VITE_CURRENCY_LOCAL_KEY;
 
     const MAIN_URL = `${API}/${KEY}/latest/${from}`;
 
@@ -75,56 +78,56 @@ const CurrencyComponent = () => {
 
     return (
         <React.Fragment>
-            {/* <div> */}
-            <div className='bg-amber-200 text-amber-800 p-4 border-2 rounded-lg'>
-                <div>
-                    <h2 className='p-4 text-3xl text-center font-bold'>Currency Converter</h2>
-                </div>
-                <div className='flex justify-center p-4 '>
+            <div className='flex flex-col justify-center items-center my-8'>
+                <div className='w-[360px] md:w-[600px] text-sm md:text-lg bg-amber-200 text-amber-800 p-2 md:p-4 border-2 rounded-lg box-border'>
+                    <div>
+                        <h2 className='p-2 md:p-4 text-xl md:text-2xl text-center font-bold'>Currency Converter</h2>
+                    </div>
+                    <div className='flex justify-center p-2 md:p-4 '>
 
-                    <input
-                        className='w-full p-2 border-2 rounded-lg mx-2 focus:outline-none'
-                        type='number'
-                        value={fromAmount}
-                        min={1}
-                        step={1}
-                        onChange={(e) => handleFromChange(e)}
-                    />
-                    <select
-                        onChange={(e) => setFrom(e.target.value)}
-                        value={from}
-                        className='mx-2 border-2 rounded-lg p-2 focus:outline-none'>
-                        {
-                            currencyList.map((currency, index) => (
-                                <option className='bg-amber-200 text-amber-800' key={index} value={currency}>{currency}</option>
-                            ))
-                        }
-                    </select>
-                </div>
+                        <input
+                            className='w-full p-1 md:p-2 border-1 md:border-2 rounded-lg mx-1 md:mx-2 focus:outline-none'
+                            type='number'
+                            value={fromAmount}
+                            min={1}
+                            step={1}
+                            onChange={(e) => handleFromChange(e)}
+                        />
+                        <select
+                            onChange={(e) => setFrom(e.target.value)}
+                            value={from}
+                            className='w-[120px] mx-1 md:mx-2 border-1 md:border-2 rounded-lg p-1 md:p-2 focus:outline-none'>
+                            {
+                                currencyList.map((currency, index) => (
+                                    <option className='text-center bg-amber-200 text-amber-800' key={index} value={currency}>{currency}</option>
+                                ))
+                            }
+                        </select>
+                    </div>
 
-                <div className='flex justify-center p-4 '>
+                    <div className='flex justify-center p-2 md:p-4 '>
 
-                    <input
-                        className='w-full p-2 border-2 rounded-lg mx-2 focus:outline-none'
-                        type='number'
-                        value={toAmount}
-                        min={1}
-                        step={1}
-                        onChange={(e) => handleToChange(e)}
-                    />
-                    <select
-                        onChange={(e) => setTo(e.target.value)}
-                        value={to}
-                        className='mx-2 border-2 rounded-lg p-2 focus:outline-none'>
-                        {
-                            currencyList.map((currency, index) => (
-                                <option className='bg-amber-200 text-amber-800' key={index} value={currency}>{currency}</option>
-                            ))
-                        }
-                    </select>
+                        <input
+                            className='w-full p-1 md:p-2 border-1 md:border-2 rounded-lg mx-1 md:mx-2 focus:outline-none'
+                            type='number'
+                            value={toAmount}
+                            min={1}
+                            step={1}
+                            onChange={(e) => handleToChange(e)}
+                        />
+                        <select
+                            onChange={(e) => setTo(e.target.value)}
+                            value={to}
+                            className='w-[120px] mx-1 md:mx-2 border-1 md:border-2 rounded-lg p-1 md:p-2 focus:outline-none'>
+                            {
+                                currencyList.map((currency, index) => (
+                                    <option className='text-center bg-amber-200 text-amber-800' key={index} value={currency}>{currency}</option>
+                                ))
+                            }
+                        </select>
+                    </div>
                 </div>
             </div>
-            {/* </div> */}
         </React.Fragment>
     )
 }

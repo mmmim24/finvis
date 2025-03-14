@@ -8,8 +8,8 @@ function App() {
   return (
     <>
       <CryptoComponent />
-      {/* <StockPriceComponent /> */}
       <CurrencyComponent />
+      <StockPriceComponent />
     </>
   )
 }

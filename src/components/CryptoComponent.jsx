@@ -115,7 +115,7 @@ const CryptoComponent = () => {
 
     return (
         <React.Fragment>
-            <div className='flex flex-col justify-center items-center'>
+            <div className='my-8 flex flex-col justify-center items-center'>
                 <div className='w-[360px] md:w-[600px] lg:w-[900px] text-sm box-border border-2 rounded-lg bg-slate-900 border-white p-4'>
                     <h2 className='m-4 md:m-6 text-sm md:text-md lg:text-lg'>
                         <select

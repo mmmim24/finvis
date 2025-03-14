@@ -166,7 +166,7 @@ const StockPriceComponent = () => {
                     className="mx-4 p-2 text-center bg-zinc-300 text-slate-700 border-2 border-slate-700 rounded-lg focus:outline-none"
                 >
                     <option value="1min">1 Minute</option>
-                    <option value="1hour">1 Hour</option>
+                    <option value="1h">1 Hour</option>
                     <option value="1day">1 Day</option>
                 </select>
             </div>

@@ -26,7 +26,7 @@ const Footer = () => {
     }, []);
 
     return (
-        <div className='h-[100px] flex flex-col md:flex-row items-center justify-center gap-1 md:gap-4 text-xs md:text-sm'>
+        <div className='border-t-2 h-[10vh] flex flex-col md:flex-row items-center justify-center gap-1 md:gap-4 text-xs md:text-sm'>
             <div>
                 copyright&copy;
             </div>

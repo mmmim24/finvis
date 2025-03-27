@@ -1,10 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import { Line } from 'react-chartjs-2';
-import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
-
-
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
+import ReactApexChart from 'react-apexcharts';
 
 const StockPriceComponent = () => {
     const BASE_URL = import.meta.env.VITE_TWELVE_DATA_LOCAL;
@@ -32,7 +28,7 @@ const StockPriceComponent = () => {
                     symbol: stockSymbol,
                     interval: interval,
                     apikey: API_KEY,
-                    outputsize: 25
+                    outputsize: 30
                 }
             });
 
@@ -57,90 +53,84 @@ const StockPriceComponent = () => {
         fetchStockPrices();
     }, [fetchStockPrices]);
 
-    const chartData = {
-        labels: stockData.prices.map(price =>
-            new Date(price.datetime).toLocaleDateString()
-        ),
-        datasets: [
-            {
-                label: 'Open Price',
-                data: stockData.prices.map(price => parseFloat(price.open)),
-                borderColor: 'rgb(255, 99, 132)',
-                backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                tension: 0.1,
-            },
-            {
-                label: 'Close Price',
-                data: stockData.prices.map(price => parseFloat(price.close)),
-                borderColor: 'rgb(54, 162, 235)',
-                backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                tension: 0.1,
-            },
-            {
-                label: 'High Price',
-                data: stockData.prices.map(price => parseFloat(price.high)),
-                borderColor: 'rgb(75, 192, 192)',
-                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                tension: 0.1,
-            },
-            {
-                label: 'Low Price',
-                data: stockData.prices.map(price => parseFloat(price.low)),
-                borderColor: 'rgb(255, 206, 86)',
-                backgroundColor: 'rgba(255, 206, 86, 0.2)',
-                tension: 0.1,
-            },
-            {
-                label: 'Volume',
-                data: stockData.prices.map(price => parseFloat(price.volume)),
-                borderColor: 'rgb(153, 102, 255)',
-                backgroundColor: 'rgba(153, 102, 255, 0.2)',
-                tension: 0.1,
-                yAxisID: 'y-volume'
-            }
-        ]
-    };
+    const candlestickSeries = [{
+        name: 'Price',
+        data: stockData.prices.map(price => ({
+            x: new Date(price.datetime).getTime(),
+            y: [
+                parseFloat(price.open),
+                parseFloat(price.high),
+                parseFloat(price.low),
+                parseFloat(price.close)
+            ]
+        }))
+    }];
 
-    const chartOptions = {
-        responsive: true,
-        interaction: {
-            mode: 'index',
-            intersect: false
+    const candlestickOptions = {
+        chart: {
+            type: 'candlestick',
+            height: 350,
+            id: 'candles',
+            toolbar: {
+                autoSelected: 'pan',
+                show: true
+            },
+            zoom: {
+                enabled: true
+            },
         },
-        stacked: false,
-        plugins: {
-            title: {
-                display: true,
-                text: `${stockSymbol} Stock Price and Volume (${interval})`
+        title: {
+            text: `${stockSymbol} Stock Price (${interval})`,
+            align: 'center'
+        },
+        xaxis: {
+            type: 'datetime',
+            tooltip: {
+                enabled: true
             }
         },
-        scales: {
-            y: {
-                type: 'linear',
-                display: true,
-                position: 'left',
-                title: {
-                    display: true,
-                    text: 'Price (USD)'
-                }
+        yaxis: {
+            tooltip: {
+                enabled: true
             },
-            'y-volume': {
-                type: 'linear',
-                display: true,
-                position: 'right',
-                title: {
-                    display: true,
-                    text: 'Volume'
-                }
-            },
-            x: {
-                title: {
-                    display: true,
-                    text: 'Date'
+            title: {
+                text: 'Price (USD)'
+            }
+        },
+        grid: {
+            borderColor: '#D4D4D8',
+            row: {
+                colors: ['transparent', 'transparent'],
+                opacity: 0.5
+            }
+        },
+        plotOptions: {
+            candlestick: {
+                colors: {
+                    upward: '#04823D',
+                    downward: '#DD1D28'
                 },
-                ticks: {
-                    maxTicksLimit: 3
+                wick: {
+                    useFillColor: true,
                 }
+            }
+        },
+        tooltip: {
+            enabled: true,
+            shared: true,
+            custom: ({ seriesIndex, dataPointIndex, w }) => {
+                const data = w.globals.initialSeries[seriesIndex].data[dataPointIndex];
+                const date = new Date(data.x).toLocaleDateString();
+
+                return `
+                <div class="apexcharts-tooltip-box">
+                    <div class="apexcharts-tooltip-title">${date}</div>
+                    <div>Open: <span>${data.y[0]}</span></div>
+                    <div>High: <span>${data.y[1]}</span></div>
+                    <div>Low: <span>${data.y[2]}</span></div>
+                    <div>Close: <span>${data.y[3]}</span></div>
+                </div>
+                `;
             }
         }
     };
@@ -168,6 +158,8 @@ const StockPriceComponent = () => {
                     <option value="1min">1 Minute</option>
                     <option value="1h">1 Hour</option>
                     <option value="1day">1 Day</option>
+                    <option value="1week">1 Week</option>
+                    <option value="1month">1 Month</option>
                 </select>
             </div>
 
@@ -177,8 +169,15 @@ const StockPriceComponent = () => {
 
             {
                 !loading && !error && stockData.prices.length > 0 && (
-                    <div>
-                        <Line data={chartData} options={chartOptions} />
+                    <div className="charts-container">
+                        <div className="mb-4">
+                            <ReactApexChart
+                                options={candlestickOptions}
+                                series={candlestickSeries}
+                                type="candlestick"
+                                height={350}
+                            />
+                        </div>
                     </div>
                 )
             }

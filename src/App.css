@@ -1,5 +1,5 @@
 #root {
-  max-width: 1280px;
+  /* max-width: 1280px; */
   margin: 0 auto;
   text-align: center;
 }
@@ -41,4 +41,91 @@
 
 .read-the-docs {
   color: #888;
+}
+
+/* ...existing code... */
+
+/* Stock Chart Styles */
+.charts-container {
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  padding: 16px;
+  margin-bottom: 24px;
+}
+
+.apexcharts-tooltip-box {
+  background-color: #0c63b9;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  padding: 8px 12px;
+  font-size: 0.9rem;
+}
+
+.apexcharts-tooltip-title {
+  font-weight: bold;
+  margin-bottom: 6px;
+  border-bottom: 1px solid #e000e0;
+  padding-bottom: 4px;
+  color: #0c63b9;
+}
+
+.stock-controls {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.stock-select,
+.interval-select {
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 2px solid #718096;
+  background-color: #00f9fa;
+  min-width: 120px;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.stock-select:focus,
+.interval-select:focus {
+  border-color: #4299e1;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5);
+}
+
+.loading-indicator {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  color: #3182ce;
+  font-size: 1.1rem;
+}
+
+.error-container {
+  background-color: #fed7d7;
+  border: 1px solid #f56565;
+  color: #c53030;
+  border-radius: 6px;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .charts-container {
+    padding: 10px;
+  }
+
+  .stock-controls {
+    flex-direction: column;
+  }
+
+  .stock-select,
+  .interval-select {
+    width: 100%;
+  }
 }

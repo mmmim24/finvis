@@ -7,11 +7,11 @@ const StockPriceComponent = () => {
     const [stockSymbol, setStockSymbol] = React.useState('AAPL');
     const [interval, setInterval] = React.useState('1day');
     const API_KEY = import.meta.env.VITE_TWELVE_DATA_API_KEY;
-    const [stockData, setStockData] = React.useState({
-        prices: [],
-        metadata: null,
-        status: null
-    });
+    // const [stockData, setStockData] = React.useState({
+    //     prices: [],
+    //     metadata: null,
+    //     status: null
+    // });
 
     const popularStocks = ['AAPL', 'GOOGL', 'MSFT', 'AMZN', 'TSLA', 'META', 'NVDA', 'NFLX', 'INTC', 'AMD'];
 
@@ -24,24 +24,24 @@ const StockPriceComponent = () => {
         return data;
     };
 
-    const { data, error: swrError, isLoading } = useSWR(
+    const { data: stockData, error, isLoading } = useSWR(
         `${BASE_URL}/time_series?symbol=${stockSymbol}&interval=${interval}&apikey=${API_KEY}&outputsize=${30}`,
         fetcher
     );
 
-    React.useEffect(() => {
-        if (data) {
-            setStockData({
-                prices: data.values.reverse(),
-                metadata: data.meta,
-                status: data.status
-            });
-        }
-    }, [data, swrError, isLoading]);
+    // React.useEffect(() => {
+    //     if (data) {
+    //         setStockData({
+    //             prices: data.values.reverse(),
+    //             metadata: data.meta,
+    //             status: data.status
+    //         });
+    //     }
+    // }, [data, error, isLoading]);
 
     const candlestickSeries = [{
         name: 'Price',
-        data: stockData.prices.map(price => ({
+        data: stockData?.values.map(price => ({
             x: new Date(price.datetime).getTime(),
             y: [
                 parseFloat(price.open),
@@ -121,6 +121,21 @@ const StockPriceComponent = () => {
         }
     };
 
+    if (isLoading) {
+        return (
+            <div className="container mx-auto my-8 p-4 w-[360px] md:w-[600px] lg:w-[900px] text-sm box-border border-2 rounded-lg bg-zinc-300 border-slate-700">
+                <div className="text-center text-slate-700">Loading stock data...</div>
+            </div>
+        );
+    }
+    if (error) {
+        return (
+            <div className="container mx-auto my-8 p-4 w-[360px] md:w-[600px] lg:w-[900px] text-sm box-border border-2 rounded-lg bg-zinc-300 border-slate-700">
+                <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">{error.message}</div>
+            </div>
+        );
+    }
+
     return (
         <div className="container mx-auto my-8 p-4 w-[360px] md:w-[600px] lg:w-[900px] text-sm box-border border-2 rounded-lg bg-zinc-300 border-slate-700">
             <div className="flex flex-row justify-between mb-4">
@@ -151,12 +166,8 @@ const StockPriceComponent = () => {
                 </select>
             </div>
 
-            {isLoading && (<div className="text-center text-blue-500">Loading stock data...</div>)}
-
-            {swrError && (<div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">{swrError}</div>)}
-
             {
-                !isLoading && !swrError && stockData.prices.length > 0 && (
+                !isLoading && !error && stockData.values.length > 0 && (
                     <div className="charts-container">
                         <div className="mb-4">
                             <ReactApexChart

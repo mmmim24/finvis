@@ -31,7 +31,7 @@ const CurrencyComponent = () => {
         }
     };
 
-    const { data } = useSWR(MAIN_URL, fetchCurrencyData);
+    const { data, isLoading, error } = useSWR(MAIN_URL, fetchCurrencyData);
     React.useEffect(() => {
         if (data) {
             setCurrencyList(Object.keys(data.conversion_rates));
@@ -75,7 +75,24 @@ const CurrencyComponent = () => {
     // console.log(from);
     // console.log(to);
 
-
+    if (error) {
+        return (
+            <div className='flex flex-col justify-center items-center my-8'>
+                <div className='w-[360px] md:w-[600px] text-sm md:text-lg bg-red-200 text-red-800 p-2 md:p-4 border-2 rounded-lg box-border'>
+                    <h2 className='p-2 md:p-4 text-xl md:text-2xl text-center font-bold'>Error: {error.message}</h2>
+                </div>
+            </div>
+        )
+    }
+    if (isLoading) {
+        return (
+            <div className='flex flex-col justify-center items-center my-8'>
+                <div className='w-[360px] md:w-[600px] text-sm md:text-lg bg-amber-200 text-amber-800 p-2 md:p-4 border-2 rounded-lg box-border'>
+                    <h2 className='p-2 md:p-4 text-xl md:text-2xl text-center font-bold'>Loading...</h2>
+                </div>
+            </div>
+        )
+    }
 
 
     return (

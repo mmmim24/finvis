@@ -1,4 +1,5 @@
 import React from 'react'
+import useSWR from 'swr';
 import { Line } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, LineController, LineElement, PointElement, Title, Tooltip, Legend, Ticks } from 'chart.js';
 

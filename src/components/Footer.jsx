@@ -31,7 +31,7 @@ const Footer = () => {
                 copyright&copy;
             </div>
             <div>
-                <a target='_blank' href='https://github.com/mmmim24/'>Mustaq Mujahid Mim</a>
+                <a target='_blank' href='https://github.com/mmmim24/finvis'>Mustaq Mujahid Mim</a>
             </div>
             <div>
                 {dateTime}

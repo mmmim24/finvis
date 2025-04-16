@@ -119,6 +119,7 @@ const CryptoComponent = () => {
                 <div className='w-[360px] md:w-[600px] lg:w-[900px] text-sm box-border border-2 rounded-lg bg-slate-900 border-white p-4'>
                     <h2 className='m-4 md:m-6 text-sm md:text-md lg:text-lg'>
                         <select
+                            id='currency'
                             className='mx-4 p-2 text-center bg-slate-900 text-white border-2 border-white rounded-lg w-[100px] focus:outline-none'
                             value={coinID}
                             onChange={(e) => setCoinID(e.target.value)}
@@ -131,6 +132,7 @@ const CryptoComponent = () => {
                         </select>
                         Price in last
                         <select
+                            id='days'
                             className='m-4 md:mx-4 p-2 text-center bg-slate-900 text-white border-2 border-white rounded-lg w-[100px] focus:outline-none'
                             value={days}
                             onChange={(e) => setDays(e.target.value)}

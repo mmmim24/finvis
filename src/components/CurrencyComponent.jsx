@@ -1,5 +1,5 @@
 import React from 'react'
-
+import useSWR from 'swr';
 
 const CurrencyComponent = () => {
 
@@ -20,18 +20,24 @@ const CurrencyComponent = () => {
     const MAIN_URL = `${API}/${KEY}/latest/${from}`;
 
 
-    const fetchCurrencyData = React.useCallback(async () => {
+    const fetchCurrencyData = async () => {
         try {
             const response = await fetch(MAIN_URL);
             const data = await response.json();
-
-            setCurrencyList(Object.keys(data.conversion_rates));
-            setRates(Object.values(data.conversion_rates));
+            return data;
 
         } catch (error) {
             console.error('Error fetching currency data', error);
         }
-    }, []);
+    };
+
+    const { data } = useSWR(MAIN_URL, fetchCurrencyData);
+    React.useEffect(() => {
+        if (data) {
+            setCurrencyList(Object.keys(data.conversion_rates));
+            setRates(Object.values(data.conversion_rates));
+        }
+    }, [data]);
 
     function convertFrom() {
         const fromRate = rates[currencyList.indexOf(from)];
@@ -55,10 +61,6 @@ const CurrencyComponent = () => {
     function handleToChange(e) {
         setToAmount(e.target.value);
     }
-
-    React.useEffect(() => {
-        fetchCurrencyData();
-    }, [fetchCurrencyData]);
 
     React.useEffect(() => {
         convertFrom();
@@ -86,6 +88,7 @@ const CurrencyComponent = () => {
                     <div className='flex justify-center p-2 md:p-4 '>
 
                         <input
+                            id='fromAmount'
                             className='w-full p-1 md:p-2 border-1 md:border-2 rounded-lg mx-1 md:mx-2 focus:outline-none'
                             type='number'
                             value={fromAmount}
@@ -94,6 +97,7 @@ const CurrencyComponent = () => {
                             onChange={(e) => handleFromChange(e)}
                         />
                         <select
+                            id='from    '
                             onChange={(e) => setFrom(e.target.value)}
                             value={from}
                             className='w-[120px] mx-1 md:mx-2 border-1 md:border-2 rounded-lg p-1 md:p-2 focus:outline-none'>
@@ -108,6 +112,7 @@ const CurrencyComponent = () => {
                     <div className='flex justify-center p-2 md:p-4 '>
 
                         <input
+                            id='toAmount'
                             className='w-full p-1 md:p-2 border-1 md:border-2 rounded-lg mx-1 md:mx-2 focus:outline-none'
                             type='number'
                             value={toAmount}
@@ -116,6 +121,7 @@ const CurrencyComponent = () => {
                             onChange={(e) => handleToChange(e)}
                         />
                         <select
+                            id='to'
                             onChange={(e) => setTo(e.target.value)}
                             value={to}
                             className='w-[120px] mx-1 md:mx-2 border-1 md:border-2 rounded-lg p-1 md:p-2 focus:outline-none'>

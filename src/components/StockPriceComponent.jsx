@@ -1,5 +1,5 @@
 import React from 'react';
-import axios from 'axios';
+import useSWR from 'swr';
 import ReactApexChart from 'react-apexcharts';
 
 const StockPriceComponent = () => {
@@ -13,45 +13,31 @@ const StockPriceComponent = () => {
         status: null
     });
 
-    const [loading, setLoading] = React.useState(false);
-    const [error, setError] = React.useState(null);
-
     const popularStocks = ['AAPL', 'GOOGL', 'MSFT', 'AMZN', 'TSLA', 'META', 'NVDA', 'NFLX', 'INTC', 'AMD'];
 
-    const fetchStockPrices = React.useCallback(async () => {
-        setLoading(true);
-        setError(null);
-
-        try {
-            const response = await axios.get(`${BASE_URL}/time_series`, {
-                params: {
-                    symbol: stockSymbol,
-                    interval: interval,
-                    apikey: API_KEY,
-                    outputsize: 30
-                }
-            });
-
-            if (response.data.status === 'error') {
-                throw new Error(response.data.message);
-            }
-
-            setStockData({
-                prices: response.data.values.reverse(),
-                metadata: response.data.meta,
-                status: response.data.status
-            });
-        } catch (error) {
-            console.error('Error fetching stock prices', error);
-            setError(error.message || 'Failed to fetch stock prices');
-        } finally {
-            setLoading(false);
+    const fetcher = async (url) => {
+        const response = await fetch(url);
+        const data = await response.json();
+        if (data.status === 'error') {
+            throw new Error(data.message);
         }
-    }, [stockSymbol, interval]);
+        return data;
+    };
+
+    const { data, error: swrError, isLoading } = useSWR(
+        `${BASE_URL}/time_series?symbol=${stockSymbol}&interval=${interval}&apikey=${API_KEY}&outputsize=${30}`,
+        fetcher
+    );
 
     React.useEffect(() => {
-        fetchStockPrices();
-    }, [fetchStockPrices]);
+        if (data) {
+            setStockData({
+                prices: data.values.reverse(),
+                metadata: data.meta,
+                status: data.status
+            });
+        }
+    }, [data, swrError, isLoading]);
 
     const candlestickSeries = [{
         name: 'Price',
@@ -139,6 +125,7 @@ const StockPriceComponent = () => {
         <div className="container mx-auto my-8 p-4 w-[360px] md:w-[600px] lg:w-[900px] text-sm box-border border-2 rounded-lg bg-zinc-300 border-slate-700">
             <div className="flex flex-row justify-between mb-4">
                 <select
+                    id="stock-symbol"
                     value={stockSymbol}
                     onChange={(e) => setStockSymbol(e.target.value)}
                     className="md:mb-0 mx-4 p-2 text-center bg-zinc-300 text-slate-700 border-2 border-slate-700 rounded-lg focus:outline-none"
@@ -151,6 +138,7 @@ const StockPriceComponent = () => {
                 </select>
 
                 <select
+                    id='interval'
                     value={interval}
                     onChange={(e) => setInterval(e.target.value)}
                     className="mx-4 p-2 text-center bg-zinc-300 text-slate-700 border-2 border-slate-700 rounded-lg focus:outline-none"
@@ -163,12 +151,12 @@ const StockPriceComponent = () => {
                 </select>
             </div>
 
-            {loading && (<div className="text-center text-blue-500">Loading stock data...</div>)}
+            {isLoading && (<div className="text-center text-blue-500">Loading stock data...</div>)}
 
-            {error && (<div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">{error}</div>)}
+            {swrError && (<div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">{swrError}</div>)}
 
             {
-                !loading && !error && stockData.prices.length > 0 && (
+                !isLoading && !swrError && stockData.prices.length > 0 && (
                     <div className="charts-container">
                         <div className="mb-4">
                             <ReactApexChart

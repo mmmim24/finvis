@@ -20,7 +20,7 @@ const StockPriceComponent = () => {
     };
 
     const { data: stockData, error, isLoading } = useSWR(
-        `${BASE_URL}/time_series?symbol=${stockSymbol}&interval=${interval}&apikey=${API_KEY}&outputsize=${30}`,
+        `${BASE_URL}/time_series?symbol=${stockSymbol}&interval=${interval}&apikey=${API_KEY}&outputsize=${60}`,
         fetcher
     );
 

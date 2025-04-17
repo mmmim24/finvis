@@ -7,11 +7,6 @@ const StockPriceComponent = () => {
     const [stockSymbol, setStockSymbol] = React.useState('AAPL');
     const [interval, setInterval] = React.useState('1day');
     const API_KEY = import.meta.env.VITE_TWELVE_DATA_API_KEY;
-    // const [stockData, setStockData] = React.useState({
-    //     prices: [],
-    //     metadata: null,
-    //     status: null
-    // });
 
     const popularStocks = ['AAPL', 'GOOGL', 'MSFT', 'AMZN', 'TSLA', 'META', 'NVDA', 'NFLX', 'INTC', 'AMD'];
 
@@ -28,16 +23,6 @@ const StockPriceComponent = () => {
         `${BASE_URL}/time_series?symbol=${stockSymbol}&interval=${interval}&apikey=${API_KEY}&outputsize=${30}`,
         fetcher
     );
-
-    // React.useEffect(() => {
-    //     if (data) {
-    //         setStockData({
-    //             prices: data.values.reverse(),
-    //             metadata: data.meta,
-    //             status: data.status
-    //         });
-    //     }
-    // }, [data, error, isLoading]);
 
     const candlestickSeries = [{
         name: 'Price',
